@@ -88,9 +88,9 @@ HTPA 热成像阵列传感器模块
 
 1 make    #编译出可执行文件app
 
-2 makegdb #进入到gdb调试模式，在执行app时需要输入sudogdbserver:1234./app/dev/i2c-6/dev/i2c-5
+2 make gdb #进入到gdb调试模式，在执行app时需要输入sudogdbserver:1234./app/dev/i2c-6/dev/i2c-5
 
-3 makerun #自动编译并执行，会输入sudo./app/dev/i2c-5/dev/i2c-5/dev/video11
+3 make run #自动编译并执行，会输入sudo./app/dev/i2c-5/dev/i2c-5/dev/video11
 
 最终执行和退出
 
