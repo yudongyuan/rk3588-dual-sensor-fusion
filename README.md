@@ -5,7 +5,7 @@ A dual-light fusion thermal imaging system based on RK3588. Features V4L2 zero-c
 
 
 
-🛠 技术栈 (Tech Stack)Languages: 
+🛠 技术栈 (Tech Stack)
 
 C, C++ System/Architecture: Linux, ARM (RK3588) 
 
