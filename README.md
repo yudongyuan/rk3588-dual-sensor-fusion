@@ -106,7 +106,21 @@ sudo./app /dev/i2c-5 /dev/i2c-5 /dev/video11#执行
 
 ## 📝 结果粗略展示 （Roughly display the results）
 
+![981525c515b9f4356547b3cd434ad43b](https://github.com/user-attachments/assets/bfd5676d-9dfc-40a2-8e47-aaf3e2936c28)
 
+## 📝 代码以外可能遇到的困难总结 （hard）
+
+1.海曼传感器要从板子上取下来，要有焊接工具。
+
+2.学生链接校园网进行复现时，会出现设置好的板端网络突然又没法使用了，这种情况是由于主机连接的是校园网ip变化导致的，需要按照原步骤重新共享网络给板端
+
+3.摄像头重启第二次之后板子cpu会出现满载bug。
+
+4.要会用一根网线共享键盘鼠标给板端，不然用触屏效率极低，而且经常按了没反应。
+
+5.开发时要用visual studio code 的SSH 远程开发，不然板端帧率又低又卡。
+
+6.如果第一次做项目硬件连接时要搞清楚BTB排线是有方向的，连错了摄像头就没像。
 
 ## 📝 相关资料 （Related materials）
 https://neucrack.com/p/199
