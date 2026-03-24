@@ -67,7 +67,7 @@ HTPA 热成像阵列传感器模块
 4. 重启设备，使用 `i2cdetect -y [总线编号]` 验证热成像模块是否挂载成功。
 
 ### 3. V4L2 节点确认
-[cite_start]重启后，在终端执行 `ls /dev/video*`，确认 IMX415 是否已成功注册为标准的 V4L2 视频设备节点（如 `/dev/video0`） [cite: 17]。
+重启后，在终端执行 `ls /dev/video*`，确认 IMX415 是否已成功注册为标准的 V4L2 视频设备节点 [cite: 17]。
 
 ---
 
@@ -83,10 +83,13 @@ HTPA 热成像阵列传感器模块
 ## 📝 编译与运行 (Build & Run)
 
 在终端命令行中输入对应指令即可
+
 代码块
 
 1 make    #编译出可执行文件app
+
 2 makegdb #进入到gdb调试模式，在执行app时需要输入sudogdbserver:1234./app/dev/i2c-6/dev/i2c-5
+
 3 makerun #自动编译并执行，会输入sudo./app/dev/i2c-5/dev/i2c-5/dev/video11
 
 最终执行和退出
@@ -94,9 +97,11 @@ HTPA 热成像阵列传感器模块
 在执行app前，要给app授予下权限，然后再执行，否则无法执行！
 
 使用ctrl+c退出，或者程序命令行中输入exit退出
+
 代码块
 
 sudo chmod 777 app  #授予权限
+
 sudo./app /dev/i2c-5 /dev/i2c-5 /dev/video11#执行
 
 
