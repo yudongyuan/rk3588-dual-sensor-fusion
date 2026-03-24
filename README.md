@@ -64,10 +64,10 @@ HTPA 热成像阵列传感器模块
 1. 编写包含 HTPA 节点和 I2C 时钟频率修改指令的 `htpa-i2c.dts` 文件。
 2. 编译设备树：`dtc -I dts -O dtb -o htpa-i2c.dtbo htpa-i2c.dts`
 3. 将生成的 `.dtbo` 文件导入 Linux 系统的 `/boot/dtb/overlays/` 目录，并修改 `/boot/uEnv.txt`（或对应引导配置文件）以加载该 Overlay。
-4. 重启设备，使用 `i2cdetect -y [总线编号]` 验证热成像模块是否挂载成功。
+4. 重启设备，使用 `i2cdetect -y ` 验证热成像模块是否挂载成功。
 
 ### 3. V4L2 节点确认
-重启后，在终端执行 `ls /dev/video*`，确认 IMX415 是否已成功注册为标准的 V4L2 视频设备节点 [cite: 17]。
+重启后，在终端执行 `ls /dev/video*`，确认 IMX415 是否已成功注册为标准的 V4L2 视频设备节点 。
 
 ---
 
@@ -103,6 +103,9 @@ HTPA 热成像阵列传感器模块
 sudo chmod 777 app  #授予权限
 
 sudo./app /dev/i2c-5 /dev/i2c-5 /dev/video11#执行
+
+## 📝 结果粗略展示 （Roughly display the results）
+
 
 
 ## 📝 相关资料 （Related materials）
