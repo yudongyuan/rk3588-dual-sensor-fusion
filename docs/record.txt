@@ -1,0 +1,247 @@
+可以编译成功的：
+/opt/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-gcc \
+--sysroot=/opt/sysroot_debian11 \-o sdl2_demo sdl2_demo.c \
+-I/opt/sdl2-rk3588-install/include \
+-L/opt/sdl2-rk3588-install/lib \
+-Wl,-rpath-link=/opt/sysroot_debian11/usr/lib/aarch64-linux-gnu \
+-lSDL2 -lgbm
+
+// fusion_context.h
+#ifndef FUSION_CONTEXT_H
+#define FUSION_CONTEXT_H
+
+#include <pthread.h>
+#include <stdint.h>
+
+#define THERMAL_ROWS 32
+#define THERMAL_COLS 32
+#define MIX_WIDTH 640
+#define MIX_HEIGHT 480
+#define YUV_FRAME_SIZE (MIX_WIDTH * MIX_HEIGHT * 3 / 2)
+
+typedef struct {
+    uint16_t thermal_data[THERMAL_ROWS][THERMAL_COLS];
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+    int updated;
+} ThermalBuffer;
+
+typedef struct {
+    uint8_t yuv_data[YUV_FRAME_SIZE];
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+    int updated;
+} YuvBuffer;
+
+typedef struct {
+    uint16_t fused_thermal[THERMAL_ROWS][THERMAL_COLS];
+    uint8_t fused_yuv[YUV_FRAME_SIZE];
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+    int updated;
+} FusionBuffer;
+
+typedef struct {
+    ThermalBuffer thermal_buf;
+    YuvBuffer yuv_buf;
+    FusionBuffer fusion_buf;
+} FusionContext;
+
+#endif
+
+// threads.h
+#ifndef THREADS_H
+#define THREADS_H
+
+#include "fusion_context.h"
+
+void* thermal_thread(void* arg);
+void* camera_thread(void* arg);
+void* fusion_thread(void* arg);
+void* display_thread(void* arg);
+
+#endif
+
+// threads.c
+#include <stdio.h>
+#include <string.h>
+#include "threads.h"
+
+void* thermal_thread(void* arg) {
+    FusionContext* ctx = (FusionContext*)arg;
+    while (1) {
+        // 模拟读取热成像数据
+        pthread_mutex_lock(&ctx->thermal_buf.mutex);
+        memset(ctx->thermal_buf.thermal_data, 0, sizeof(ctx->thermal_buf.thermal_data));
+        ctx->thermal_buf.updated = 1;
+        pthread_cond_signal(&ctx->thermal_buf.cond);
+        pthread_mutex_unlock(&ctx->thermal_buf.mutex);
+        usleep(33000);
+    }
+    return NULL;
+}
+
+void* camera_thread(void* arg) {
+    FusionContext* ctx = (FusionContext*)arg;
+    while (1) {
+        // 模拟读取摄像头数据
+        pthread_mutex_lock(&ctx->yuv_buf.mutex);
+        memset(ctx->yuv_buf.yuv_data, 128, sizeof(ctx->yuv_buf.yuv_data));
+        ctx->yuv_buf.updated = 1;
+        pthread_cond_signal(&ctx->yuv_buf.cond);
+        pthread_mutex_unlock(&ctx->yuv_buf.mutex);
+        usleep(33000);
+    }
+    return NULL;
+}
+
+void* fusion_thread(void* arg) {
+    FusionContext* ctx = (FusionContext*)arg;
+    while (1) {
+        pthread_mutex_lock(&ctx->thermal_buf.mutex);
+        while (!ctx->thermal_buf.updated)
+            pthread_cond_wait(&ctx->thermal_buf.cond, &ctx->thermal_buf.mutex);
+        pthread_mutex_unlock(&ctx->thermal_buf.mutex);
+
+        pthread_mutex_lock(&ctx->yuv_buf.mutex);
+        while (!ctx->yuv_buf.updated)
+            pthread_cond_wait(&ctx->yuv_buf.cond, &ctx->yuv_buf.mutex);
+        pthread_mutex_unlock(&ctx->yuv_buf.mutex);
+
+        pthread_mutex_lock(&ctx->fusion_buf.mutex);
+        memcpy(ctx->fusion_buf.fused_thermal, ctx->thermal_buf.thermal_data, sizeof(ctx->fusion_buf.fused_thermal));
+        memcpy(ctx->fusion_buf.fused_yuv, ctx->yuv_buf.yuv_data, sizeof(ctx->fusion_buf.fused_yuv));
+        ctx->fusion_buf.updated = 1;
+        pthread_cond_signal(&ctx->fusion_buf.cond);
+        pthread_mutex_unlock(&ctx->fusion_buf.mutex);
+    }
+    return NULL;
+}
+
+void* display_thread(void* arg) {
+    FusionContext* ctx = (FusionContext*)arg;
+    while (1) {
+        pthread_mutex_lock(&ctx->fusion_buf.mutex);
+        while (!ctx->fusion_buf.updated)
+            pthread_cond_wait(&ctx->fusion_buf.cond, &ctx->fusion_buf.mutex);
+        ctx->fusion_buf.updated = 0;
+        pthread_mutex_unlock(&ctx->fusion_buf.mutex);
+
+        // 使用 OpenCV 显示 ctx->fusion_buf.fused_thermal 与 fused_yuv
+        // cv_show_heimann_classic(ctx->fusion_buf.fused_thermal);
+        // draw_roi_frame(ctx->fusion_buf.fused_yuv);
+    }
+    return NULL;
+}
+
+// main.c
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include "threads.h"
+
+int main(int argc, char *argv[]) {
+    FusionContext ctx = {0};
+
+    pthread_mutex_init(&ctx.thermal_buf.mutex, NULL);
+    pthread_cond_init(&ctx.thermal_buf.cond, NULL);
+
+    pthread_mutex_init(&ctx.yuv_buf.mutex, NULL);
+    pthread_cond_init(&ctx.yuv_buf.cond, NULL);
+
+    pthread_mutex_init(&ctx.fusion_buf.mutex, NULL);
+    pthread_cond_init(&ctx.fusion_buf.cond, NULL);
+
+    pthread_t t1, t2, t3, t4;
+    pthread_create(&t1, NULL, thermal_thread, &ctx);
+    pthread_create(&t2, NULL, camera_thread, &ctx);
+    pthread_create(&t3, NULL, fusion_thread, &ctx);
+    pthread_create(&t4, NULL, display_thread, &ctx);
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+    pthread_join(t3, NULL);
+    pthread_join(t4, NULL);
+
+    return 0;
+}
+
+
+
+实际开发中建议的融合流程：
+静态传感器系统：
+
+开始阶段做一次棋盘格标定
+
+保存变换矩阵 H 或仿射变换 M
+
+在实时处理时用 cv::warpPerspective 直接对热图变换即可
+
+动态传感器/移动平台：
+
+使用 ORB/SIFT 特征提取 + 配准
+
+或者搭配图像跟踪方法（如光流）持续更新对齐状态
+
+热成像图像分辨率低：
+
+建议先做插值放大（如双线性插值），再做配准处理
+
+
+配准的常见方法分类
+📌 一、基于手工标定的配准（标定板/已知结构）
+适用场景：传感器固定、场景稳定
+核心思路：利用相机标定方法找出两个传感器之间的空间变换关系（内参、外参）
+
+🚩 关键步骤：
+使用棋盘格标定板拍摄同步图像
+
+对可见光相机与红外相机分别进行标定，求取相机内参
+
+计算两相机间的相对姿态（旋转矩阵和平移向量）
+
+使用重投影变换（例如单应矩阵 Homography）进行图像配准
+
+将热成像图像或可见光图像通过变换映射到统一坐标系下
+
+📌 代码参考（OpenCV）：
+cpp
+复制
+编辑
+cv::Mat H = cv::findHomography(src_pts, dst_pts); // 单应性矩阵
+cv::warpPerspective(thermal_img, aligned_thermal, H, visible_img.size());
+📌 二、基于特征匹配的配准（自动化）
+适用场景：无标定板、图像内容清晰（建筑、边缘等）
+关键思路：提取两幅图像的特征点，进行匹配后估计几何变换
+
+🔑 步骤：
+特征提取（如 SIFT、ORB、AKAZE 等）
+
+特征匹配（暴力匹配 BruteForceMatcher 或 FLANN）
+
+通过 RANSAC 排除错误匹配
+
+估算变换矩阵（仿射 / 单应性矩阵）
+
+使用 warpAffine 或 warpPerspective 进行图像变换
+
+📌 特点：
+不需要标定板
+
+可适应一定的运动或视角变化
+
+对热成像图像特征弱的问题，要选择合适的特征（SIFT 比 ORB 更稳）
+
+📌 三、深度学习方法（高精度/弱特征环境）
+适用于：
+
+热成像图像细节少
+
+特征提取困难
+
+场景复杂、非刚性目标
+
+代表方法：
+使用 CNN 提取深度特征后对齐（如 D2-Net, SuperGlue）
+
+端到端图像配准网络（如 R2D2、RAFT）
