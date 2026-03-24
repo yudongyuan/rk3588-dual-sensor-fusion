@@ -30,6 +30,23 @@ Protocols/Drivers: I2C, Device Tree
 | **显示屏幕** | 鲁班猫套餐中MIPI屏幕 | - | 显示效果，便于调试 |
 ---
 
+购买建议：在咸鱼上找原先就买的MIPI屏摄像头套餐的最好，只要单独购买海曼传感器即可，现在内存涨价价格上升太多，买新的不太划算。
+
+2026.3.24
+
+鲁班猫 RK3588 开发板 MIPI屏摄像头套餐
+
+原价：1189 现价：1669
+
+海曼传感器咸鱼上有卖，但是是连在一个串口通信（本项目用的是I2C）的板子上的，要用电烙铁把传感器取下来，有一定难度。
+
+HTPA 热成像阵列传感器模块
+
+2026.3.24
+
+原价：30 现价：70
+
+屏幕最好还是要一个，用Synergy 和 网线实现局域网共享鼠标，效率高非常多。
 ## ⚙️ 硬件组装与连接步骤 (Hardware Setup)
 
 ### 1. 摄像头物理连接
@@ -57,9 +74,9 @@ Protocols/Drivers: I2C, Device Tree
 ## 🚀 核心软件特性 (Key Software Features)
 * **V4L2 零拷贝采集：** 抛弃低效的 read/write 模式，利用 mmap 共享内存机制，直接在用户空间获取 NV12 格式图像的物理内存映射，大幅降低 CPU 占用 。
 * **定制化 I2C 交互：** 越过通用驱动限制，直接使用 `ioctl` 操作 I2C 字符设备，实现对 HTPA 寄存器的精细化读写与状态机控制 。
-* **多线程并发控制：** 构建采图、推理、融合、推流四级流水线，引入 `pthread_mutex` 与 `pthread_cond` 保障数据帧在队列流转中的线程安全 [cite: 21]。
-* **NPU 硬件加速：** 将 YOLOv5 转换为 RKNN 模型，充分压榨 RK3588 的 6TOPS NPU 算力，实现高帧率边缘检测 [cite: 22]。
-* **轻量级网络推流：** 集成 `libwebsockets`，将融合后的图像帧高效编码并实时推送到前端页面，支持跨端跨平台查看 [cite: 24]。
+* **多线程并发控制：** 构建采图、推理、融合、推流四级流水线，引入 `pthread_mutex` 与 `pthread_cond` 保障数据帧在队列流转中的线程安全 。
+* **NPU 硬件加速：** 将 YOLOv5 转换为 RKNN 模型，充分压榨 RK3588 的 6TOPS NPU 算力，实现高帧率边缘检测 。
+* **轻量级网络推流：** 集成 `libwebsockets`，将融合后的图像帧高效编码并实时推送到前端页面，支持跨端跨平台查看 。
 
 ---
 
@@ -67,13 +84,18 @@ Protocols/Drivers: I2C, Device Tree
 
 在终端命令行中输入对应指令即可
 代码块
+
 1 make    #编译出可执行文件app
 2 makegdb #进入到gdb调试模式，在执行app时需要输入sudogdbserver:1234./app/dev/i2c-6/dev/i2c-5
 3 makerun #自动编译并执行，会输入sudo./app/dev/i2c-5/dev/i2c-5/dev/video11
+
 最终执行和退出
+
 在执行app前，要给app授予下权限，然后再执行，否则无法执行！
+
 使用ctrl+c退出，或者程序命令行中输入exit退出
 代码块
+
 sudo chmod 777 app  #授予权限
 sudo./app /dev/i2c-5 /dev/i2c-5 /dev/video11#执行
 
@@ -85,5 +107,6 @@ https://doc.embedfire.com/linux/rk3588/quick_start/zh/latest/README.html#lubanca
 https://doc.embedfire.com/linux/rk356x/Ai/zh/latest/lubancat_ai/env/toolkit2.html
 https://doc.embedfire.com/linux/rk356x/driver/zh/latest/README.html
 https://doc.embedfire.com/linux/rk356x/Ai/zh/latest/lubancat_ai/example/yolov5.html
+
 以上资料均为他人资源，非原创
 
