@@ -96,9 +96,13 @@ https://github.com/ultralytics/yolov5/releases 以上是野火给出的下载地
 
 打开 Anaconda Prompt 输入 （完全没基础的需要先去搞深度学习基础）
 
+
+
 conda create -n Yolotest python=3.9 -y
 
 conda activate Yolotest
+
+cd /d D:\AApython\projects\YOLO\YOLOtest
 
 找到Yolotest所在的文件位置，用以下命名查看全部位置
 
