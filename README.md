@@ -73,6 +73,15 @@ HTPA 热成像阵列传感器模块
 ### 3. V4L2 节点确认
 重启后，在终端执行 `ls /dev/video*`，确认 IMX415 是否已成功注册为标准的 V4L2 视频设备节点 。
 
+
+## 🚀 YOLO模型部署 (YOLO Model Deployment)
+
+wait....
+
+## 🚀 websocket推流详解 (websocket Streaming Explained)
+
+wait....
+
 ---
 
 ## 🚀 核心软件特性 (Key Software Features)
