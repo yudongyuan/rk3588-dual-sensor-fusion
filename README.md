@@ -76,7 +76,41 @@ HTPA 热成像阵列传感器模块
 
 ## 🚀 YOLO模型部署 (YOLO Model Deployment)
 
-wait....
+Yolov5 是一种目标检测算法，属于单阶段目标检测方法，是在COCO数据集上预训练的物体检测架构和模型系列。
+
+最新的YOLOv5 v7.0有YOLOv5n、YOLOv5s、YOLOv5m、YOLOv5l、YOLOv5x等
+
+测试环境：鲁班猫RK板卡系统是Debian或者ubuntu（带桌面的系统，我是Debian测试结果是可以的，如果想装ubuntu也可），PC是WSL2（ubuntu20.04），PyTorch是2.1.2，
+
+YOLOv5 v7.0，airockchip/yolov5 v6.2。
+
+测试环境需要自己搭建，需要有一定深度学习和pycharm使用基础。
+
+下载yolov5s.pt，yolov5m.pt，yolov5l.pt，yolov5x.pt权重文件 最小的是n，它速度最快、精度最低。
+
+https://github.com/ultralytics/yolov5/releases 以上是野火给出的下载地址
+
+流程细节：
+
+1.现在PC端测试YOLOv5环境
+
+2.下载 获取预训练权重文件
+
+3.基于yolov5s.pt，导出rknn
+
+# 安装下onnx的环境
+
+pip3 install -r requirements.txt onnx onnx-simplifier
+
+# 指定权重文件yolov5s.pt或者自己训练的模型文件best.pt，使用下面命令将导出onnx模型
+
+python3 export.py --weights yolov5s.pt --include  onnx
+
+# 或者使用下面命令，导出torchscript
+
+python3 export.py --weights yolov5s.pt --include  torchscript
+
+
 
 ## 🚀 websocket推流详解 (websocket Streaming Explained)
 
