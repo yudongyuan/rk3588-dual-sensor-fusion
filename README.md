@@ -2,7 +2,11 @@
 A dual-light fusion thermal imaging system based on RK3588. Features V4L2 zero-copy capture , YOLOv5 object detection via RKNN , and real-time WebSocket streaming.
 
 ## 📖 项目简介 (Overview)
-本项目是一个部署在 ARM 架构 RK3588 高性能平台上的端侧多模态视觉系统 。系统通过驱动 HTPA 热成像模块与 SONY IMX415 高清摄像头 ，在底层实现 V4L2 零拷贝图像采集，并在 NPU 上利用 RKNN 异构部署 YOLOv5 进行目标检测。最终通过 OpenCV 完成空间配准与热成像伪彩融合 ，并基于 WebSocket 实现融合视频流的低延迟网络分发与控制 。
+本项目是一个部署在 ARM 架构 RK3588 高性能平台上的端侧多模态视觉系统 。
+
+系统通过驱动 HTPA 热成像模块与 SONY IMX415 高清摄像头 ，在底层实现 V4L2 零拷贝图像采集，并在 NPU 上利用 RKNN 异构部署 YOLOv5 进行目标检测。
+
+最终通过 OpenCV 完成空间配准与热成像伪彩融合 ，并基于 WebSocket 实现融合视频流的低延迟网络分发与控制 。
 
 🛠 技术栈 (Tech Stack)
 
