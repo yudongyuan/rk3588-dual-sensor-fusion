@@ -124,6 +124,10 @@ pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple/
 
 pip3 install -r requirements.txt
 
+测试安装是否成功
+
+python detect.py --source ./data/images/ --weights yolov5s.pt
+
 2.下载 获取预训练权重文件
 
 3.基于yolov5s.pt，导出rknn
