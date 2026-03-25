@@ -110,7 +110,15 @@ conda info --envs
 
 <img width="998" height="738" alt="81f652af-4f3e-4ea5-81c2-f3b0b6bdbcaf" src="https://github.com/user-attachments/assets/4b91af37-aa79-45c4-aee2-0957b3b79d05" />
 
+# 拉取最新的yolov5(教程测试时是v7.0)，可以指定下版本分支
 
+git clone https://github.com/ultralytics/yolov5
+
+cd yolov5
+
+pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple/
+
+pip3 install -r requirements.txt
 
 2.下载 获取预训练权重文件
 
@@ -128,7 +136,13 @@ python3 export.py --weights yolov5s.pt --include  onnx
 
 python3 export.py --weights yolov5s.pt --include  torchscript
 
+python
 
+>>> import torch
+
+>>> import utils
+
+>>> display=utils.notebook_init()
 
 ## 🚀 websocket推流详解 (websocket Streaming Explained)
 
