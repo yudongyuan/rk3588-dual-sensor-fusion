@@ -94,6 +94,24 @@ https://github.com/ultralytics/yolov5/releases 以上是野火给出的下载地
 
 1.现在PC端测试YOLOv5环境
 
+打开 Anaconda Prompt 输入 （完全没基础的需要先去搞深度学习基础）
+
+conda create -n Yolotest python=3.9 -y
+
+conda activate Yolotest
+
+找到Yolotest所在的文件位置，用以下命名查看全部位置
+
+conda info --envs
+
+<img width="541" height="330" alt="d3340be9-3a40-42fe-8293-b79b18d5c3d7" src="https://github.com/user-attachments/assets/44d2d2d3-5654-496e-ab82-6fcf1229852d" />
+
+然后打开pycharm中的文件-设置-Python解释器-环境-生成新的
+
+<img width="998" height="738" alt="81f652af-4f3e-4ea5-81c2-f3b0b6bdbcaf" src="https://github.com/user-attachments/assets/4b91af37-aa79-45c4-aee2-0957b3b79d05" />
+
+
+
 2.下载 获取预训练权重文件
 
 3.基于yolov5s.pt，导出rknn
