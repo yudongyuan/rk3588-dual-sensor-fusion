@@ -143,6 +143,7 @@ sudo./app /dev/i2c-5 /dev/i2c-5 /dev/video11#执行
 ## 📝 相关资料 （Related materials）
 https://neucrack.com/p/199
 https://www.bilibili.com/video/BV1hvcoegEQE/?spm_id_from=333.337.search-card.all.click&vd_source=e96bea795203925ab6232cb1ab9de752
+https://doc.embedfire.com/linux/rk356x/Ai/zh/latest/lubancat_ai/env/env.html
 https://doc.embedfire.com/linux/rk3588/quick_start/zh/latest/README.html#lubancat
 https://doc.embedfire.com/linux/rk356x/Ai/zh/latest/lubancat_ai/env/toolkit2.html
 https://doc.embedfire.com/linux/rk356x/driver/zh/latest/README.html
